@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'XXNetwork_Example' do
+  pod 'XXNetwork', :path => '../'
+
+  target 'XXNetwork_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
