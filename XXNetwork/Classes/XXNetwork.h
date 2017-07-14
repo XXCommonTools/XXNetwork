@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef Header_h
-#define Header_h
+#ifndef _XXNetwork_
+#define _XXNetwork_
 
 #import "XXApiBaseManager.h"
 #import "XXApiProxy.h"
