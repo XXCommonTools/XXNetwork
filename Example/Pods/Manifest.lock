@@ -15,9 +15,11 @@ PODS:
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - XXCategories (0.1.0)
-  - XXNetwork (0.1.0):
+  - XXNetwork (0.1.2):
     - AFNetworking
     - XXCategories
+    - XXNetworkingAnimationAction
+  - XXNetworkingAnimationAction (0.1.1)
 
 DEPENDENCIES:
   - XXNetwork (from `../`)
@@ -29,7 +31,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   XXCategories: 515ac6668c320fdafcda8c6d2266664c81b40855
-  XXNetwork: 2ba46090ea50d84a1e18dc05a4b7cb5a04ee98e9
+  XXNetwork: 05c82f2b0299f0fbf0f59d304e4904cdfbbd1ec6
+  XXNetworkingAnimationAction: feff4cd25267fe5820575547d1a6efa3a4fa26d7
 
 PODFILE CHECKSUM: 64d7e0c54fb16a2f436798e674566eda58a5d9cd
 

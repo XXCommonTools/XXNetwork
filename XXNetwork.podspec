@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'XXNetwork'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'XXNetwork 是一个离散型的网络请求工具'
 
 # This description is used to generate tags and improve search results.
@@ -40,6 +40,8 @@ TODO: Add long description of the pod here.
   # s.frameworks = 'UIKit', 'MapKit'
   s.dependency 'AFNetworking'
   s.dependency 'XXCategories'
+  s.dependency 'XXNetworkingAnimationAction'
+
 
 
 end
