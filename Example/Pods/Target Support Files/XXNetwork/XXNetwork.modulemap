@@ -1,0 +1,6 @@
+framework module XXNetwork {
+  umbrella header "XXNetwork-umbrella.h"
+
+  export *
+  module * { export * }
+}

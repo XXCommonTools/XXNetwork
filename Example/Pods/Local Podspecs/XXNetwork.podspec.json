@@ -1,0 +1,30 @@
+{
+  "name": "XXNetwork",
+  "version": "0.1.0",
+  "summary": "XXNetwork 是一个离散型的网络请求工具",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/XXCommonTools/XXNetwork",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "yangzi": "595919268@qq.com"
+  },
+  "source": {
+    "git": "https://github.com/XXCommonTools/XXNetwork.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "XXNetwork/Classes/**/*",
+  "dependencies": {
+    "AFNetworking": [
+
+    ],
+    "XXCategories": [
+
+    ]
+  }
+}

@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'XXNetwork'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of XXNetwork.'
+  s.summary          = 'XXNetwork 是一个离散型的网络请求工具'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -21,11 +21,11 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/acct<blob>=0xE7BE8AE5AD90/XXNetwork'
+  s.homepage         = 'https://github.com/XXCommonTools/XXNetwork'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'acct<blob>=0xE7BE8AE5AD90' => '595919268@qq.com' }
-  s.source           = { :git => 'https://github.com/acct<blob>=0xE7BE8AE5AD90/XXNetwork.git', :tag => s.version.to_s }
+  s.author           = { 'yangzi' => '595919268@qq.com' }
+  s.source           = { :git => 'https://github.com/XXCommonTools/XXNetwork.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
@@ -38,5 +38,8 @@ TODO: Add long description of the pod here.
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'AFNetworking'
+  s.dependency 'XXCategories'
+
+
 end

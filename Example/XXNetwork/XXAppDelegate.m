@@ -7,12 +7,25 @@
 //
 
 #import "XXAppDelegate.h"
+#import <XXCategories/NSDictionary+ToString.h>
 
 @implementation XXAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    NSDictionary *dict = @{@"test":@"12",
+                           @"a":@"1213",
+                           @"b":@"1213312312"};
+    NSDictionary *dict2 = @{@"b":@"1213312312",
+                            @"test":@"12",
+                            @"a":@"1213"};
+    
+    NSString *string1 = [dict toString];
+    NSString *string2 = [dict2 toString];
+    NSLog(@"\n%@\n%@\n",string1,string2);
+
+    
+    
     return YES;
 }
 

@@ -1,4 +1,4 @@
-# XXNetwork
+# XXNetwork 是一个离散型的网络请求工具，参考了 [casa](https://casatwy.com/) 的 [这篇文章](https://casatwy.com/iosying-yong-jia-gou-tan-wang-luo-ceng-she-ji-fang-an.html)
 
 [![CI Status](http://img.shields.io/travis/acct<blob>=0xE7BE8AE5AD90/XXNetwork.svg?style=flat)](https://travis-ci.org/acct<blob>=0xE7BE8AE5AD90/XXNetwork)
 [![Version](https://img.shields.io/cocoapods/v/XXNetwork.svg?style=flat)](http://cocoapods.org/pods/XXNetwork)
@@ -22,7 +22,7 @@ pod "XXNetwork"
 
 ## Author
 
-acct<blob>=0xE7BE8AE5AD90, 595919268@qq.com
+yangzi, 595919268@qq.com
 
 ## License
 
