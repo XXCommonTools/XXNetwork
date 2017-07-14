@@ -17,6 +17,10 @@ XXNetwork is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
+
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/XXCommonTools/XXRepos.git'
+
 pod 'XXNetwork',:git => 'https://github.com/XXCommonTools/XXNetwork.git'
 
 ```
