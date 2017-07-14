@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <XXNetworkingAnimationAction/XXNetworkingAnimationAction.h>
+#import <XXNetworkingAnimationAction/XXNetworkAnimation.h>
 
 @interface XXNetworkingConfigurationManager: NSObject
 

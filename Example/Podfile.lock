@@ -19,7 +19,7 @@ PODS:
     - AFNetworking
     - XXCategories
     - XXNetworkingAnimationAction
-  - XXNetworkingAnimationAction (0.1.1)
+  - XXNetworkingAnimationAction (0.1.2)
 
 DEPENDENCIES:
   - XXNetwork (from `../`)
@@ -32,7 +32,7 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   XXCategories: 515ac6668c320fdafcda8c6d2266664c81b40855
   XXNetwork: 05c82f2b0299f0fbf0f59d304e4904cdfbbd1ec6
-  XXNetworkingAnimationAction: feff4cd25267fe5820575547d1a6efa3a4fa26d7
+  XXNetworkingAnimationAction: 5a9aa95f3e33d0c02f1835027f748c7f08c3e6de
 
 PODFILE CHECKSUM: 64d7e0c54fb16a2f436798e674566eda58a5d9cd
 

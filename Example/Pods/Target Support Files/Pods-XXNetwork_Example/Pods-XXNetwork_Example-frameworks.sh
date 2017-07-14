@@ -87,9 +87,11 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/AFNetworking/AFNetworking.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XXCategories/XXCategories.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XXNetwork/XXNetwork.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/XXNetworkingAnimationAction/XXNetworkingAnimationAction.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/AFNetworking/AFNetworking.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XXCategories/XXCategories.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XXNetwork/XXNetwork.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/XXNetworkingAnimationAction/XXNetworkingAnimationAction.framework"
 fi
