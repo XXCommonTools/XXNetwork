@@ -245,13 +245,9 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     self.isLoading = NO;
     self.response = response;
     self.resultType = XXApiManagerResultTypeSuccess;
-    if (response.responseData) {
-        
-        NSError *error = nil;
-        id object = [NSJSONSerialization JSONObjectWithData:response.responseData options:NSJSONReadingMutableContainers error:&error];
-        self.fetchedRawData = [object copy];
-        [self.requestArray removeObject:@(response.requestId)];
-    }
+    [self.requestArray removeObject:@(response.requestId)];
+    self.fetchedRawData = [response.jsonResponseObject copy];
+    
     if ([self.validator manager:self isCorrectWithCallBackData:self.fetchedRawData]) {
         
         if ([self.child respondsToSelector:@selector(cacheDataTime)]) {
@@ -282,13 +278,9 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     self.isLoading = NO;
     self.response = response;
     self.resultType = resultType;
-    if (response.responseData) {
-        
-        NSError *error = nil;
-        id object = [NSJSONSerialization JSONObjectWithData:response.responseData options:NSJSONReadingMutableContainers error:&error];
-        self.fetchedRawData = [object copy];
-        [self.requestArray removeObject:@(response.requestId)];
-    }
+    [self.requestArray removeObject:@(response.requestId)];
+    self.fetchedRawData = [response.jsonResponseObject copy];
+    
     if ([self beforePerformFailWithResponse:response]) {
         
         if ([self.delegate respondsToSelector:@selector(managerCallApiDidFailed:)]) {

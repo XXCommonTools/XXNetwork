@@ -26,6 +26,7 @@ typedef enum : NSUInteger {
 @property (strong,nonatomic,readonly) XXApiRequest *request;
 @property (strong,nonatomic,readonly) NSError *error;
 @property (assign,nonatomic,readonly) BOOL isCache;
+@property (strong,nonatomic,readonly) id jsonResponseObject;
 
 ///根据服务器返回的数据创建XXApiResponse对象
 - (instancetype)initWithRequestId:(NSInteger)requestId request:(XXApiRequest *)request responseData:(NSData *)responseData error:(NSError *)error;

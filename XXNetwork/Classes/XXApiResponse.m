@@ -16,6 +16,7 @@
 @property (strong,nonatomic,readwrite) XXApiRequest *request;
 @property (strong,nonatomic,readwrite) NSError *error;
 @property (assign,nonatomic,readwrite) BOOL isCache;
+@property (strong,nonatomic,readwrite) id jsonResponseObject;
 
 
 @end
@@ -84,7 +85,26 @@
 #pragma mark - event response
 
 #pragma mark - getters and setters
+- (id)jsonResponseObject {
 
+    if (!_jsonResponseObject) {
+        
+        if (self.responseData) {
+            
+            NSError *error = nil;
+            _jsonResponseObject = [NSJSONSerialization JSONObjectWithData:self.responseData options:NSJSONReadingMutableContainers error:&error];
+            if (error) {
+                
+#ifdef DEBUG
+                
+                NSLog(@"\n响应数据:\n%@\n转json出错：\n%@\n",self.reponseString,error);
+                
+#endif
+            }
+        }
+    }
+    return _jsonResponseObject;
+}
 
 
 @end
