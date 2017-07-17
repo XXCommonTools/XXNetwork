@@ -8,6 +8,7 @@
 
 #import "XXAppDelegate.h"
 #import <XXCategories/NSDictionary+ToString.h>
+#import <XXNetwork/XXNetwork.h>
 
 @implementation XXAppDelegate
 
@@ -23,6 +24,8 @@
     NSString *string1 = [dict toString];
     NSString *string2 = [dict2 toString];
     NSLog(@"\n%@\n%@\n",string1,string2);
+    
+    [XXLog logCacheData:nil url:@"https://www.baodu.com" method:@"post" params:dict];
 
     
     

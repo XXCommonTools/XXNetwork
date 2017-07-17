@@ -9,17 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "XXApiRequest.h"
 
-typedef enum : NSUInteger {
-    XXApiResponseStatusSuccess,
-    XXApiResponseStatusErrorTimeout,
-    XXApiResponseStatusErrorNoNetwork,
-} XXApiResponseStatus;
-
-
 //响应对象
 @interface XXApiResponse: NSObject
 
-@property (assign,nonatomic,readonly) XXApiResponseStatus status;
+@property (assign,nonatomic,readonly) NSInteger status;
 @property (copy,nonatomic,readonly) NSString *reponseString;
 @property (strong,nonatomic,readonly) NSData *responseData;
 @property (assign,nonatomic,readonly) NSInteger requestId;

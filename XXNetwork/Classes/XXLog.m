@@ -85,7 +85,44 @@
         [string appendFormat:@"\n\nError:\n%@",error];
     }
     
-    NSLog(@"\n\n%@\n\n",string);
+    NSLog(@"\n\n\n\n%@\n\n\n\n",string);
+#endif
+}
+/**
+ 缓存信息的日志
+ 
+ @param data 缓存的数据
+ @param url 请求的url
+ @param method 请求的方式
+ @param params 请求的参数
+ */
++ (void)logCacheData:(NSData *)data url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params {
+
+#ifdef DEBUG
+    
+    NSMutableString *string = [[NSMutableString alloc] init];
+    
+    [string appendString:@"\n\n==============================================================\n=                        Cache Log                           =\n==============================================================\n\n"];
+    
+    [string appendString:@"\n\n==============================================================\n=                        Resquest Infor                      =\n==============================================================\n\n"];
+    
+    [string appendFormat:@"\n\nRequest Method:\n%@",method];
+    [string appendFormat:@"\n\nRequest Url:\n%@",url];
+    if (params) {
+        
+        NSData *requestParamsData = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *requestParamsString = [[NSString alloc] initWithData:requestParamsData encoding:NSUTF8StringEncoding];
+        
+        [string appendFormat:@"\n\nRequest Params:\n%@",requestParamsString];
+    }
+    if (data) {
+        
+        NSString *reponseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        [string appendString:@"\n\n==============================================================\n=                        Response Result                     =\n==============================================================\n\n"];
+        [string appendFormat:@"\n\nResponse String:\n\n%@",reponseString];
+    }
+    
+    NSLog(@"\n\n\n\n%@\n\n\n\n",string);
 #endif
 }
 

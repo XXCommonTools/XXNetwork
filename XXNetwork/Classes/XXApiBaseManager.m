@@ -10,6 +10,7 @@
 #import "XXApiProxy.h"
 #import "XXNetworkingConfigurationManager.h"
 #import "XXCacheManager.h"
+#import "XXLog.h"
 
 ///在调用成功之后的params字典里面，用这个key可以取出requestID
 NSString *const kXXApiManagerRequestId = @"kXXApiManagerRequestId";
@@ -36,6 +37,9 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
 @property (assign,nonatomic,readwrite) BOOL isLoading;
 @property (strong,nonatomic) XXApiResponse *response;
 @property (strong,nonatomic) NSDictionary *requestParams;
+///失败时的code 0 为正常   通过这个可以看到对应的头文件，NSURLError.h NSURLErrorTimedOut
+@property (assign,nonatomic,readwrite) NSInteger errorCode;
+
 
 
 @end
@@ -94,6 +98,8 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     NSString *url = self.child.requestUrl;
     NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
     NSData *data = [[XXCacheManager sharedInstance] fetchDataWithServiceIdentifier:serviceIdenfitier url:url method:method params:params];
+    
+    [XXLog logCacheData:data url:url method:method params:params];
     
     return data;
 }
@@ -245,6 +251,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     self.isLoading = NO;
     self.response = response;
     self.resultType = XXApiManagerResultTypeSuccess;
+    self.errorCode = response.status;
     [self.requestArray removeObject:@(response.requestId)];
     self.fetchedRawData = [response.jsonResponseObject copy];
     
@@ -278,6 +285,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     self.isLoading = NO;
     self.response = response;
     self.resultType = resultType;
+    self.errorCode = response.status;
     [self.requestArray removeObject:@(response.requestId)];
     self.fetchedRawData = [response.jsonResponseObject copy];
     

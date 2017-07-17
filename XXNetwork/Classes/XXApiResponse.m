@@ -9,7 +9,7 @@
 
 @interface XXApiResponse ()
 
-@property (assign,nonatomic,readwrite) XXApiResponseStatus status;
+@property (assign,nonatomic,readwrite) NSInteger status;
 @property (copy,nonatomic,readwrite) NSString *reponseString;
 @property (strong,nonatomic,readwrite) NSData *responseData;
 @property (assign,nonatomic,readwrite) NSInteger requestId;
@@ -33,20 +33,15 @@
 }
 
 #pragma mark - private
-- (XXApiResponseStatus)responseStatusWithError:(NSError *)error
-{
+- (NSInteger)responseStatusWithError:(NSError *)error {
     if (error) {
         
-        XXApiResponseStatus result = XXApiResponseStatusErrorNoNetwork;
-        if (error.code == NSURLErrorTimedOut) {
-            
-            result = XXApiResponseStatusErrorTimeout;
-        }
-        return result;
+        NSInteger errorCode = error.code;
+        return errorCode;
         
     } else {
         
-        return XXApiResponseStatusSuccess;
+        return 0;
     }
 }
 

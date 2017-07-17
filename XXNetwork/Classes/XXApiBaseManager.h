@@ -28,12 +28,16 @@ typedef enum : NSUInteger {
 
 typedef enum : NSUInteger {
     
-    XXApiManagerResultTypeDefault,      ///没有产生api请求，这个是manager的默认状态。
-    XXApiManagerResultTypeSuccess,      ///API请求成功且返回数据正确，此时manager的数据是可以直接拿来使用的。
-    XXApiManagerResultTypeFail,         ///API请求失败，进入失败的回调
-    XXApiManagerResultTypeNoContent,    ///API请求成功但返回数据不正确。如果回调数据验证函数返回值为NO，manager的状态就会是这个。
-    XXApiManagerResultTypeTimeout,      ///请求超时
-    XXApiManagerResultTypeNoNetwork      ///网络不通,在调用API之前会判断一下当前网络是否通畅，这个也是在调用API之前验证的，和上面超时的状态是有区别的。
+    ///没有产生api请求，这个是manager的默认状态。
+    XXApiManagerResultTypeDefault,
+    ///API请求成功且返回数据正确，此时manager的数据是可以直接拿来使用的。
+    XXApiManagerResultTypeSuccess,
+    ///API请求失败，进入失败的回调，详细失败的原因可以见 errorCode
+    XXApiManagerResultTypeFail,
+    ///API请求成功但返回数据不正确。如果回调数据验证函数返回值为NO，manager的状态就会是这个。
+    XXApiManagerResultTypeNoContent,
+     ///网络不通,在调用API之前会判断一下当前网络是否通畅,没有网络就是这个状态。
+    XXApiManagerResultTypeNoNetwork
     
 } XXApiManagerResultType;
 
@@ -144,6 +148,8 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 @property (weak,nonatomic) id <XXApiManagerInterceptor> interceptor;
 @property (weak,nonatomic) id <XXApiManagerValidator> validator;
 @property (assign,nonatomic,readonly) XXApiManagerResultType resultType;
+///失败时的code 0 为正常   通过这个可以看到对应的头文件，NSURLError.h NSURLErrorTimedOut
+@property (assign,nonatomic,readonly) NSInteger errorCode;
 @property (assign,nonatomic,readonly) BOOL isReachable;
 @property (assign,nonatomic,readonly) BOOL isLoading;
 
