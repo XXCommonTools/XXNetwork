@@ -33,6 +33,36 @@
 }
 
 #pragma mark - private
+/// AFN的去除 null values 的方法
+- (id)removeNullValuesWithObject:(id)object readingOptions:(NSJSONReadingOptions)readingOptions {
+    
+    if ([object isKindOfClass:[NSArray class]]) {
+        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)object count]];
+        for (id value in (NSArray *)object) {
+            
+            id tempObject = [self removeNullValuesWithObject:value readingOptions:readingOptions];
+            [mutableArray addObject:tempObject];
+        }
+        
+        return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
+    } else if ([object isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:object];
+        for (id <NSCopying> key in [(NSDictionary *)object allKeys]) {
+            id value = (NSDictionary *)object[key];
+            if (!value || [value isEqual:[NSNull null]]) {
+                [mutableDictionary removeObjectForKey:key];
+            } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
+                
+                mutableDictionary[key] = [self removeNullValuesWithObject:value readingOptions:readingOptions];
+            }
+        }
+        
+        return (readingOptions & NSJSONReadingMutableContainers) ? mutableDictionary : [NSDictionary dictionaryWithDictionary:mutableDictionary];
+    }
+    
+    return object;
+}
+
 - (NSInteger)responseStatusWithError:(NSError *)error {
     if (error) {
         
@@ -96,6 +126,9 @@
                 
 #endif
             }
+            
+            //删除jsonResponseObject 中的NSNull的类型
+            _jsonResponseObject = [self removeNullValuesWithObject:_jsonResponseObject readingOptions:NSJSONReadingMutableContainers];
         }
     }
     return _jsonResponseObject;
