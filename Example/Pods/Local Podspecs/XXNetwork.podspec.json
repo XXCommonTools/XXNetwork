@@ -1,6 +1,6 @@
 {
   "name": "XXNetwork",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "summary": "XXNetwork 是一个离散型的网络请求工具",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/XXCommonTools/XXNetwork",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/XXCommonTools/XXNetwork.git",
-    "tag": "0.1.4"
+    "tag": "0.1.6"
   },
   "platforms": {
     "ios": "8.0"
