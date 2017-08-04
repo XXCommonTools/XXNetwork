@@ -11,8 +11,6 @@ Pod::Spec.new do |s|
   s.author           = { 'yangzi' => '595919268@qq.com' }
   s.source           = { :git => 'https://github.com/XXCommonTools/XXNetwork.git', :tag => s.version.to_s }
   s.ios.deployment_target = '8.0'
-
-  s.public_header_files = 'XXNetwork/XXNetwork.h'
   s.source_files = 'XXNetwork/Classes/**/*'
 
   s.dependency 'AFNetworking'
@@ -20,8 +18,9 @@ Pod::Spec.new do |s|
 
   s.subspec 'XXNetworkAnimation' do |ss|
 
-   ss.source_files = 'XXNetwork/XXNetworkAnimation.{h,m}'
+   ss.source_files = 'XXNetwork/Classes/XXNetworkAnimation.{h,m}'
 
   end
+
 
 end
