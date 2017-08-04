@@ -18,3 +18,6 @@
 
 @end
 
+@interface XXNetworkAnimation : NSObject
+
+@end
