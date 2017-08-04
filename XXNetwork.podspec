@@ -18,9 +18,8 @@ Pod::Spec.new do |s|
 
   s.subspec 'XXNetworkAnimation' do |ss|
 
-   ss.source_files = 'XXNetwork/Classes/XXNetworkAnimation.{h,m}'
+   ss.source_files = 'XXNetwork/Classes/XXNetworkAnimation/**/*'
 
   end
-
 
 end
