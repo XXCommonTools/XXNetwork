@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'XXNetwork'
-  s.version          = '0.1.7'
+  s.version          = '0.1.8'
   s.summary          = 'XXNetwork 是一个离散型的网络请求工具'
 
   s.description      = 'XXNetwork 是一个离散型的网络请求工具'
@@ -11,15 +11,25 @@ Pod::Spec.new do |s|
   s.author           = { 'yangzi' => '595919268@qq.com' }
   s.source           = { :git => 'https://github.com/XXCommonTools/XXNetwork.git', :tag => s.version.to_s }
   s.ios.deployment_target = '8.0'
-  s.source_files = 'XXNetwork/Classes/**/*'
+  s.source_files = 'XXNetwork/Classes/XXNetwork.h'
 
-  s.dependency 'AFNetworking'
-  s.dependency 'XXCategories'
+s.subspec 'XXNetworkCore' do |ss|
 
-  s.subspec 'XXNetworkAnimation' do |ss|
+ss.source_files = 'XXNetwork/Classes/XXNetworkCore/*'
+ss.dependency 'AFNetworking'
+ss.dependency 'XXCategories'
+ss.dependency 'XXNetwork/XXNetworkAnimation'
 
-   ss.source_files = 'XXNetwork/Classes/XXNetworkAnimation/**/*'
+end
 
-  end
+s.subspec 'XXNetworkAnimation' do |ss|
+
+ss.source_files = 'XXNetwork/Classes/XXNetworkAnimation/XXNetworkAnimation.{h,m}'
+ss.public_header_files = 'XXNetwork/Classes/XXNetworkAnimation/XXNetworkAnimation.h'
+
+end
+
+
+
 
 end

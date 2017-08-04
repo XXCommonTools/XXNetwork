@@ -8,7 +8,7 @@
 
 #import "XXAppDelegate.h"
 #import <XXCategories/NSDictionary+ToString.h>
-#import <XXNetwork/XXNetwork.h>
+#import <XXNetwork/XXLog.h>
 
 @implementation XXAppDelegate
 
