@@ -1,5 +1,13 @@
 #ifdef __OBJC__
 #import <UIKit/UIKit.h>
+#else
+#ifndef FOUNDATION_EXPORT
+#if defined(__cplusplus)
+#define FOUNDATION_EXPORT extern "C"
+#else
+#define FOUNDATION_EXPORT extern
+#endif
+#endif
 #endif
 
 #import "XXApiBaseManager.h"
@@ -10,6 +18,7 @@
 #import "XXCacheModel.h"
 #import "XXLog.h"
 #import "XXNetwork.h"
+#import "XXNetworkAnimation.h"
 #import "XXNetworkingConfigurationManager.h"
 #import "XXRequestGenerator.h"
 #import "XXService.h"

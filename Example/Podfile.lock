@@ -18,22 +18,23 @@ PODS:
   - XXNetwork (0.1.6):
     - AFNetworking
     - XXCategories
-    - XXNetworkingAnimationAction
-  - XXNetworkingAnimationAction (0.1.2)
+    - XXNetwork/XXNetworkAnimation (= 0.1.6)
+  - XXNetwork/XXNetworkAnimation (0.1.6):
+    - AFNetworking
+    - XXCategories
 
 DEPENDENCIES:
   - XXNetwork (from `../`)
 
 EXTERNAL SOURCES:
   XXNetwork:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   XXCategories: 3067a6cf06fac18cca40462a9a9e8e9e8bc92cc3
-  XXNetwork: 00a33945f1965d5f65fa9814a28410fd1bb707db
-  XXNetworkingAnimationAction: 5a9aa95f3e33d0c02f1835027f748c7f08c3e6de
+  XXNetwork: f155f49c0f12d20a061b346f4d441d4d72fd5cfd
 
 PODFILE CHECKSUM: 64d7e0c54fb16a2f436798e674566eda58a5d9cd
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.1

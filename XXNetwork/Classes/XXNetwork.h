@@ -16,10 +16,13 @@
 #import "XXCacheManager.h"
 #import "XXCacheModel.h"
 #import "XXLog.h"
+#import "XXNetwork.h"
+#import "XXNetworkAnimation.h"
 #import "XXNetworkingConfigurationManager.h"
 #import "XXRequestGenerator.h"
 #import "XXService.h"
 #import "XXServiceGenerator.h"
+
 
 
 

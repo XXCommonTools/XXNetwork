@@ -1,6 +1,0 @@
-framework module XXNetworkingAnimationAction {
-  umbrella header "XXNetworkingAnimationAction-umbrella.h"
-
-  export *
-  module * { export * }
-}
