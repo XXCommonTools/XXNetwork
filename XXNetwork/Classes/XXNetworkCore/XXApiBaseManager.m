@@ -103,15 +103,33 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     
     return data;
 }
-- (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime {
+- (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime params:(NSDictionary *)params {
 
     NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
     NSString *url = self.child.requestUrl;
     NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
-    [[XXCacheManager sharedInstance] saveCacheData:data cacheTime:cacheTime serviceIdentifier:serviceIdenfitier url:url method:method params:self.requestParams];
+    [[XXCacheManager sharedInstance] saveCacheData:data cacheTime:cacheTime serviceIdentifier:serviceIdenfitier url:url method:method params:params];
 }
-
-- (NSInteger)loadDataWithParams:(NSDictionary *)params {
+- (void)deleteCacheData:(NSData *)data params:(NSDictionary *)params {
+    
+    NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
+    NSString *url = self.child.requestUrl;
+    NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
+    
+    [[XXCacheManager sharedInstance] deleteDataWithServiceIdentifier:serviceIdenfitier url:url method:method params:params];
+}
+- (NSDictionary *)setUpRequestParams {
+    
+    NSDictionary *params = [self.paramSource paramsForApiManager:self];
+    if ([self.child respondsToSelector:@selector(reformParams:)]) {
+        
+        NSDictionary *dict = [self.child reformParams:params];
+        params = [[NSDictionary alloc] initWithDictionary:dict];
+    }
+    self.requestParams = params;
+    return self.requestParams;
+}
+- (NSInteger)loadDataWithParams:(NSDictionary *)apiParams {
 
     NSInteger requestId = 0;
     XXApiRequestSerializerType requestType = XXApiRequestSerializerTypeHttp;
@@ -124,13 +142,6 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
         
         bodyBlock = [self.child constructingBodyBlock];
     }
-    NSDictionary *apiParams = params;
-    if ([self.child respondsToSelector:@selector(reformParams:)]) {
-        
-        NSDictionary *dict = [self.child reformParams:params];
-        apiParams = [[NSDictionary alloc] initWithDictionary:dict];
-    }
-    self.requestParams = apiParams;
     NSString *serviceIdentifier = self.child.requestServiceIdentifier;
     NSString *requestUrl = self.child.requestUrl;
     
@@ -236,9 +247,9 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
                 [self afterCallAPIWithParams:afterParams];
             }
         } else {
-        
-            NSException *exception = [[NSException alloc] initWithName:@"XXApiBaseManager提示" reason:[NSString stringWithFormat:@"验证器：%@验证参数：%@失败",self.validator,apiParams] userInfo:nil];
-            @throw exception;
+#ifdef DEBUG
+            NSLog(@"\nXXApiBaseManager请求的参数验证失败\n验证器：%@\n请求的参数：%@\n",self.validator,apiParams);
+#endif
         }
     }
     
@@ -262,7 +273,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
             NSTimeInterval time = [self.child cacheDataTime];
             if (time > 0 && !response.isCache) {
                 
-                [self saveCacheData:response.responseData cacheTime:time];
+                [self saveCacheData:response.responseData cacheTime:time params:[self setUpRequestParams]];
             }
         }
         if ([self beforePerformSuccessWithResponse:response]) {
@@ -408,11 +419,18 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
 }
 - (NSInteger)loadData {
 
-    NSDictionary *params = [self.paramSource paramsForApiManager:self];
+    NSDictionary *params = [self setUpRequestParams];
     NSInteger requestIdentifier = [self loadDataWithParams:params];
     [self.requestArray addObject:@(requestIdentifier)];
     
     return requestIdentifier;
+}
+///清除该接口的缓存数据
+- (void)clearCacheData {
+    
+    NSDictionary *params = [self setUpRequestParams];
+    NSData *localData = [self fetchCacheDataWithParams:params];
+    [self deleteCacheData:localData params:params];
 }
 - (void)cancelAllRequests {
 

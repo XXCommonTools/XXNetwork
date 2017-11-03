@@ -17,5 +17,7 @@
 - (NSData *)fetchDataWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params;
 
 - (void)deleteDataWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params;
+///删除所有的缓存数据
+- (void)deleteAllCacheData;
 
 @end

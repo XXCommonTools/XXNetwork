@@ -88,8 +88,8 @@
 
     NSString *fileName = [self.cacheObjectDir stringByAppendingPathComponent:key];
     NSString *dataFileName = [self.cacheDataDir stringByAppendingPathComponent:key];
-    [self deleteDataWithKey:fileName];
-    [self deleteDataWithKey:dataFileName];
+    [self deleteFileWithPath:fileName];
+    [self deleteFileWithPath:dataFileName];
 }
 - (void)deleteFileWithPath:(NSString *)path {
 
@@ -112,6 +112,13 @@
 
     NSString *key = [self dataKeyWithServiceIdentifier:serviceIdentifier url:url method:method params:params];
     [self deleteDataWithKey:key];
+}
+///删除所有的缓存数据
+- (void)deleteAllCacheData {
+    
+    [self deleteFileWithPath:self.cacheDir];
+    [self deleteFileWithPath:self.cacheObjectDir];
+    [self deleteFileWithPath:self.cacheDataDir];
 }
 #pragma mark - delegate
 

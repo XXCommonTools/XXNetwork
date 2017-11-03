@@ -166,6 +166,8 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 - (NSInteger)loadData;
 - (void)cancelAllRequests;
 - (void)cancelRequestWithRequestId:(NSInteger)requestID;
+///清除该接口的缓存数据
+- (void)clearCacheData;
 
 ///通过这个方法获取改造后的数据
 - (id)fetchDataWithReformer:(id <XXApiManagerDataReformer>)reformer;
