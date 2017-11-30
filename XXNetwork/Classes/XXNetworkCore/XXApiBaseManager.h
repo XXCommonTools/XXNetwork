@@ -94,6 +94,8 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 - (AFConstructingBlock)constructingBodyBlock;
 ///在调用API之前额外添加一些参数,但不应该在这个函数里面修改已有的参数
 - (NSDictionary *)reformParams:(NSDictionary *)params;
+///返回YES则先从网络抓取数据，如果 cacheDataTime > 0 则更新本地数据
+- (BOOL)shouldLoadDataFromNetWork;
 ///返回YES则先从本地抓取数据，如果本地有数据则不发送网络请求，如果本地没有则发送网络请求
 - (BOOL)shouldLoadDataFromCache;
 ///返回YES则表示没有网络时则先从本地抓取数据，如果本地没有则请求失败

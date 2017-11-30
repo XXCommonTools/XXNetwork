@@ -92,23 +92,56 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     return isReachability;
 }
 
-- (NSData *)fetchCacheDataWithParams:(NSDictionary *)params {
+- (void)fetchCacheDataWithId:(NSInteger)requestId params:(NSDictionary *)apiParams {
 
-    NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
-    NSString *url = self.child.requestUrl;
-    NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
-    NSData *data = [[XXCacheManager sharedInstance] fetchDataWithServiceIdentifier:serviceIdenfitier url:url method:method params:params];
+    [self fetchCacheDataWithParams:apiParams success:^(NSData *cacheData) {
+        
+        if (cacheData) {
+            
+            [self handleCacheDataCallBackWithData:cacheData params:apiParams];
+            
+        } else {
+            
+            [self loadDataFromNetWorkWithId:requestId params:apiParams];
+        }
+    }];
+}
+- (void)handleCacheDataCallBackWithData:(NSData *)cacheData params:(NSDictionary *)apiParams {
     
-    [XXLog logCacheData:data url:url method:method params:params];
+    XXApiResponse *response = [[XXApiResponse alloc] initWithResponseData:cacheData];
+    NSMutableDictionary *afterParams = [apiParams mutableCopy];
+    afterParams[kXXApiManagerRequestId] = @(-1);
+    [self afterCallAPIWithParams:afterParams];
+    [self requestSuccessWithReponse:response];
+}
+- (void)fetchCacheDataWithParams:(NSDictionary *)params success:(void(^)(NSData *cacheData))successBlock {
     
-    return data;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+       
+        NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
+        NSString *url = self.child.requestUrl;
+        NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
+        NSData *data = [[XXCacheManager sharedInstance] fetchDataWithServiceIdentifier:serviceIdenfitier url:url method:method params:params];
+        
+        [XXLog logCacheData:data url:url method:method params:params];
+        dispatch_async(dispatch_get_main_queue(), ^{
+           
+            if (successBlock) {
+                
+                successBlock(data);
+            }
+        });
+    });
 }
 - (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime params:(NSDictionary *)params {
 
-    NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
-    NSString *url = self.child.requestUrl;
-    NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
-    [[XXCacheManager sharedInstance] saveCacheData:data cacheTime:cacheTime serviceIdentifier:serviceIdenfitier url:url method:method params:params];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+       
+        NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
+        NSString *url = self.child.requestUrl;
+        NSString *method = [NSString stringWithFormat:@"%zd",self.child.requestMethod];
+        [[XXCacheManager sharedInstance] saveCacheData:data cacheTime:cacheTime serviceIdentifier:serviceIdenfitier url:url method:method params:params];
+    });
 }
 - (void)deleteCacheData:(NSData *)data params:(NSDictionary *)params {
     
@@ -129,130 +162,141 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     self.requestParams = params;
     return self.requestParams;
 }
+- (void)loadDataFromNetWorkWithId:(NSInteger)requestId params:(NSDictionary *)apiParams {
+    
+    if ([self isReachable]) {
+        
+        XXApiRequestSerializerType requestType = XXApiRequestSerializerTypeHttp;
+        if ([self.child respondsToSelector:@selector(requestSerializerType)]) {
+            
+            requestType = [self.child requestSerializerType];
+        }
+        AFConstructingBlock bodyBlock = nil;
+        if ([self.child respondsToSelector:@selector(constructingBodyBlock)]) {
+            
+            bodyBlock = [self.child constructingBodyBlock];
+        }
+        NSString *serviceIdentifier = self.child.requestServiceIdentifier;
+        NSString *requestUrl = self.child.requestUrl;
+        
+        self.isLoading = YES;
+        switch (self.child.requestMethod) {
+                
+            case XXApiRequestMethodGET:{
+                
+                CallApi(requestId, GET);
+                break;
+            }
+            case XXApiRequestMethodPOST:{
+                
+                __weak typeof(self) weakSelf = self;
+                [[XXApiProxy sharedInstance] callPOSTWithParams:apiParams requestSerializerType:requestType requestServiceIdentifier:serviceIdentifier requestUrl:requestUrl bodyBlock:bodyBlock uploadProgressBlock:^(NSProgress *progress) {
+                    
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    [strongSelf requestUploadProgress:progress];
+                    
+                } success:^(XXApiResponse *response) {
+                    
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    [strongSelf requestSuccessWithReponse:response];
+                    
+                } fail:^(XXApiResponse *response) {
+                    
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    [strongSelf requestFailWithResponse:response resultType:XXApiManagerResultTypeFail];
+                    
+                }];
+                break;
+            }
+            case XXApiRequestMethodPUT:{
+                
+                CallApi(requestId, PUT);
+                break;
+            }
+            case XXApiRequestMethodDELETE:{
+                
+                CallApi(requestId, DELETE);
+                break;
+            }
+            default:
+                break;
+        }
+        NSMutableDictionary *afterParams = [apiParams mutableCopy];
+        afterParams[kXXApiManagerRequestId] = @(requestId);
+        [self afterCallAPIWithParams:afterParams];
+        
+    } else {
+        
+        if ([self.child respondsToSelector:@selector(shouldLoadDataFromCacheWhenNoNetwork)]) {
+            
+            BOOL isLocal = [self.child shouldLoadDataFromCacheWhenNoNetwork];
+            if (isLocal) {
+                
+                [self fetchCacheDataWithParams:apiParams success:^(NSData *cacheData) {
+                   
+                    if (cacheData) {
+                        
+                        [self handleCacheDataCallBackWithData:cacheData params:apiParams];
+                        
+                    } else {
+                        
+                        [self requestFailWithResponse:nil resultType:XXApiManagerResultTypeNoNetwork];
+                    }
+                }];
+            } else {
+                
+                [self requestFailWithResponse:nil resultType:XXApiManagerResultTypeNoNetwork];
+            }
+        } else {
+            
+            [self requestFailWithResponse:nil resultType:XXApiManagerResultTypeNoNetwork];
+        }
+    }
+}
 - (NSInteger)loadDataWithParams:(NSDictionary *)apiParams {
 
     NSInteger requestId = 0;
-    XXApiRequestSerializerType requestType = XXApiRequestSerializerTypeHttp;
-    if ([self.child respondsToSelector:@selector(requestSerializerType)]) {
-        
-        requestType = [self.child requestSerializerType];
-    }
-    AFConstructingBlock bodyBlock = nil;
-    if ([self.child respondsToSelector:@selector(constructingBodyBlock)]) {
-        
-        bodyBlock = [self.child constructingBodyBlock];
-    }
-    NSString *serviceIdentifier = self.child.requestServiceIdentifier;
-    NSString *requestUrl = self.child.requestUrl;
-    
     if ([self shouldCallAPIWithParams:apiParams]) {
         
         if ([self.validator manager:self isCorrectWithParamsData:apiParams]) {
             
             [self startAnimation];
-            
+            BOOL ignoreCache = NO;
+            if ([self.child respondsToSelector:@selector(shouldLoadDataFromNetWork)]) {
+                
+                ignoreCache = [self.child shouldLoadDataFromNetWork];
+                if (ignoreCache) {
+                    
+                    [self loadDataFromNetWorkWithId:requestId params:apiParams];
+                    return requestId;
+                }
+            }
             if ([self.child respondsToSelector:@selector(shouldLoadDataFromCache)]) {
                 
                 BOOL isLocal = [self.child shouldLoadDataFromCache];
                 if (isLocal) {
-                    NSData *localData = [self fetchCacheDataWithParams:apiParams];
-                    if (localData) {
-                        
-                        XXApiResponse *response = [[XXApiResponse alloc] initWithResponseData:localData];
-                        NSMutableDictionary *afterParams = [apiParams mutableCopy];
-                        afterParams[kXXApiManagerRequestId] = @(-1);
-                        [self afterCallAPIWithParams:afterParams];
-                        [self requestSuccessWithReponse:response];
-                        return -1;
-                    }
-                }
-            }
-            
-            if ([self isReachable]) {
-                
-                self.isLoading = YES;
-                switch (self.child.requestMethod) {
-                        
-                    case XXApiRequestMethodGET:{
-                        
-                        CallApi(requestId, GET);
-                        break;
-                    }
-                    case XXApiRequestMethodPOST:{
-                        
-                        __weak typeof(self) weakSelf = self;
-                        [[XXApiProxy sharedInstance] callPOSTWithParams:apiParams requestSerializerType:requestType requestServiceIdentifier:serviceIdentifier requestUrl:requestUrl bodyBlock:bodyBlock uploadProgressBlock:^(NSProgress *progress) {
-                            
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf requestUploadProgress:progress];
-                            
-                        } success:^(XXApiResponse *response) {
-                            
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf requestSuccessWithReponse:response];
-                            
-                        } fail:^(XXApiResponse *response) {
-                            
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf requestFailWithResponse:response resultType:XXApiManagerResultTypeFail];
-                            
-                        }];
-                        break;
-                    }
-                    case XXApiRequestMethodPUT:{
-                        
-                        CallApi(requestId, PUT);
-                        break;
-                    }
-                    case XXApiRequestMethodDELETE:{
-                        
-                        CallApi(requestId, DELETE);
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                NSMutableDictionary *afterParams = [apiParams mutableCopy];
-                afterParams[kXXApiManagerRequestId] = @(requestId);
-                [self afterCallAPIWithParams:afterParams];
-                
-            } else {
-            
-                if ([self.child respondsToSelector:@selector(shouldLoadDataFromCacheWhenNoNetwork)]) {
                     
-                    BOOL isLocal = [self.child shouldLoadDataFromCacheWhenNoNetwork];
-                    if (isLocal) {
-                        
-                        NSData *localData = [self fetchCacheDataWithParams:apiParams];
-                        if (localData) {
-                            
-                            XXApiResponse *response = [[XXApiResponse alloc] initWithResponseData:localData];
-                            NSMutableDictionary *afterParams = [apiParams mutableCopy];
-                            afterParams[kXXApiManagerRequestId] = @(-1);
-                            [self afterCallAPIWithParams:afterParams];
-                            [self requestSuccessWithReponse:response];
-                            return -1;
-                            
-                        } else {
-                        
-                            [self requestFailWithResponse:nil resultType:XXApiManagerResultTypeNoNetwork];
-                        }
-                    }
+                    [self fetchCacheDataWithId:requestId params:apiParams];
+                    
                 } else {
-                
-                    [self requestFailWithResponse:nil resultType:XXApiManagerResultTypeNoNetwork];
+                    
+                    [self loadDataFromNetWorkWithId:requestId params:apiParams];
                 }
-                NSMutableDictionary *afterParams = [apiParams mutableCopy];
-                afterParams[kXXApiManagerRequestId] = @(-2);
-                [self afterCallAPIWithParams:afterParams];
+            } else {
+                
+                [self loadDataFromNetWorkWithId:requestId params:apiParams];
             }
         } else {
 #ifdef DEBUG
             NSLog(@"\nXXApiBaseManager请求的参数验证失败\n验证器：%@\n请求的参数：%@\n",self.validator,apiParams);
 #endif
         }
+    } else {
+        
+#ifdef DEBUG
+        NSLog(@"不允许发送请求，请实现 beforeCallingApiWithParams 这个方法");
+#endif
     }
-    
     return requestId;
 }
 - (void)requestSuccessWithReponse:(XXApiResponse *)response {
@@ -429,8 +473,10 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
 - (void)clearCacheData {
     
     NSDictionary *params = [self setUpRequestParams];
-    NSData *localData = [self fetchCacheDataWithParams:params];
-    [self deleteCacheData:localData params:params];
+    [self fetchCacheDataWithParams:params success:^(NSData *cacheData) {
+       
+        [self deleteCacheData:cacheData params:params];
+    }];
 }
 - (void)cancelAllRequests {
 

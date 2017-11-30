@@ -11,7 +11,7 @@
 
 
 #import <XXCategories/NSDictionary+ToString.h>
-#import <XXCategories/NSString+Base64.h>
+#import <XXCategories/NSString+MD5.h>
 #import <XXCategories/NSString+FilePath.h>
 
 @interface XXCacheManager ()
@@ -50,8 +50,8 @@
 
     NSString *paramString = [params toString];
     NSString *key = [NSString stringWithFormat:@"%@_%@_%@_%@",serviceIdentifier,url,method,paramString];
-    NSString *base64Key = [key base64String];
-    return base64Key;
+    NSString *md5String = [key md5String];
+    return md5String;
 }
 - (void)saveCacheData:(NSData *)data key:(NSString *)key cacheTime:(NSTimeInterval)cacheTime {
 
@@ -62,10 +62,28 @@
         cacheModel = [[XXCacheModel alloc] init];
     }
     [cacheModel updateContent:data cacheTime:cacheTime];
-    [NSKeyedArchiver archiveRootObject:cacheModel toFile:fileName];
-    
+    BOOL isOk = [NSKeyedArchiver archiveRootObject:cacheModel toFile:fileName];
     NSString *dataFileName = [self.cacheDataDir stringByAppendingPathComponent:key];
-    [data writeToFile:dataFileName atomically:YES];
+    BOOL isWrite = [data writeToFile:dataFileName atomically:YES];
+#ifdef DEBUG
+    if (isOk) {
+        
+        NSLog(@"缓存数据对象归档成功,文件名：%@  ~~~~~~~ 数据：%@",fileName,cacheModel);
+        
+    } else {
+        
+        NSLog(@"缓存数据对象归档不成功,文件名：%@  ~~~~~~~ 数据：%@",fileName,cacheModel);
+    }
+    if (isWrite) {
+        
+        NSLog(@"数据文件保存成功,文件名：%@  ~~~~~~~ 数据：%@",dataFileName,data);
+
+    } else {
+        
+        NSLog(@"数据文件保存不成功,文件名：%@  ~~~~~~~ 数据：%@",dataFileName,data);
+    }
+#endif
+
 }
 - (NSData *)fetchDataWithKey:(NSString *)key {
 
