@@ -166,6 +166,8 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 
 ///发请求获取数据
 - (NSInteger)loadData;
+///重置数据
+- (void)resetData;
 - (void)cancelAllRequests;
 - (void)cancelRequestWithRequestId:(NSInteger)requestID;
 ///清除该接口的缓存数据

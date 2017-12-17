@@ -469,6 +469,11 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     
     return requestIdentifier;
 }
+///重置数据
+- (void)resetData {
+    
+    self.fetchedRawData = nil;
+}
 ///清除该接口的缓存数据
 - (void)clearCacheData {
     
