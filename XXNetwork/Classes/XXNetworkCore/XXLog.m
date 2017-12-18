@@ -37,7 +37,7 @@
  #服务器返回的数据解密后（json格式）
  #错误信息
  */
-+ (void)logWithRequest:(NSURLRequest *)request params:(NSDictionary *)params finalParams:(NSDictionary *)finalParams reponseData:(NSData *)responseData finalResponseData:(NSData *)finalResponseData error:(NSError *)error {
++ (void)logWithRequest:(NSURLRequest *)request params:(id)params finalParams:(id)finalParams reponseData:(NSData *)responseData finalResponseData:(NSData *)finalResponseData error:(NSError *)error {
 
 #ifdef DEBUG
     
@@ -46,10 +46,13 @@
     [string appendString:@"\n\n==============================================================\n=                        Resquest Infor                      =\n==============================================================\n\n"];
     
     NSDictionary *httpHeades = request.allHTTPHeaderFields;
-    NSData *headData = [NSJSONSerialization dataWithJSONObject:httpHeades options:NSJSONWritingPrettyPrinted error:nil];
-    NSString *headString = [[NSString alloc] initWithData:headData encoding:NSUTF8StringEncoding];
-    
-    [string appendFormat:@"\n\nRequest Header:\n%@",headString];
+    if (httpHeades) {
+        
+        NSData *headData = [NSJSONSerialization dataWithJSONObject:httpHeades options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *headString = [[NSString alloc] initWithData:headData encoding:NSUTF8StringEncoding];
+        
+        [string appendFormat:@"\n\nRequest Header:\n%@",headString];
+    }
     [string appendFormat:@"\n\nRequest Method:\n%@",request.HTTPMethod];
     [string appendFormat:@"\n\nRequest Url:\n%@",request.URL];
     if (params) {
@@ -59,7 +62,7 @@
         
         [string appendFormat:@"\n\nRequest Params:\n%@",requestParamsString];
     }
-    if (![finalParams isEqualToDictionary:params]) {
+    if (finalParams) {
         
         NSData *finalParamsData = [NSJSONSerialization dataWithJSONObject:finalParams options:NSJSONWritingPrettyPrinted error:nil];
         NSString *finalParamsString = [[NSString alloc] initWithData:finalParamsData encoding:NSUTF8StringEncoding];
@@ -73,7 +76,7 @@
         [string appendString:@"\n\n==============================================================\n=                        Response Result                     =\n==============================================================\n\n"];
         [string appendFormat:@"\n\nResponse String:\n\n%@",reponseString];
     }
-    if (![finalResponseData isEqualToData:responseData]) {
+    if (![finalResponseData isEqualToData:responseData] && finalResponseData) {
         
         NSString *finalResponseString = [[NSString alloc] initWithData:finalResponseData encoding:NSUTF8StringEncoding];
         [string appendFormat:@"\n\nFinal Response String:\n\n%@",finalResponseString];
@@ -96,7 +99,7 @@
  @param method 请求的方式
  @param params 请求的参数
  */
-+ (void)logCacheData:(NSData *)data url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params {
++ (void)logCacheData:(NSData *)data url:(NSString *)url method:(NSString *)method params:(id)params {
 
 #ifdef DEBUG
     

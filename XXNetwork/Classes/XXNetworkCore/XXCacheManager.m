@@ -46,9 +46,17 @@
 }
 
 #pragma mark - private
-- (NSString *)dataKeyWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params {
+- (NSString *)dataKeyWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(id)params {
 
-    NSString *paramString = [params toString];
+    NSString *paramString = @"";
+    if ([params isKindOfClass:[NSDictionary class]]) {
+        
+        paramString = [params toString];
+        
+    } else if ([params isKindOfClass:[NSArray class]]) {
+        
+        paramString = [params toString];
+    }
     NSString *key = [NSString stringWithFormat:@"%@_%@_%@_%@",serviceIdentifier,url,method,paramString];
     NSString *md5String = [key md5String];
     return md5String;
@@ -115,18 +123,18 @@
     [manager removeItemAtPath:path error:nil];
 }
 #pragma mark - public
-- (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime serviceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params {
+- (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime serviceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(id)params {
 
     NSString *key = [self dataKeyWithServiceIdentifier:serviceIdentifier url:url method:method params:params];
     [self saveCacheData:data key:key cacheTime:cacheTime];
 }
 
-- (NSData *)fetchDataWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params {
+- (NSData *)fetchDataWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(id)params {
 
     NSString *key = [self dataKeyWithServiceIdentifier:serviceIdentifier url:url method:method params:params];
     return  [self fetchDataWithKey:key];
 }
-- (void)deleteDataWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params {
+- (void)deleteDataWithServiceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url method:(NSString *)method params:(id)params {
 
     NSString *key = [self dataKeyWithServiceIdentifier:serviceIdentifier url:url method:method params:params];
     [self deleteDataWithKey:key];

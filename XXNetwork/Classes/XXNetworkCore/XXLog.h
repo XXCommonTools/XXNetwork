@@ -21,7 +21,7 @@
  #服务器返回的数据解密后（json格式）
  #错误信息
  */
-+ (void)logWithRequest:(NSURLRequest *)request params:(NSDictionary *)params finalParams:(NSDictionary *)finalParams reponseData:(NSData *)responseData finalResponseData:(NSData *)finalResponseData error:(NSError *)error;
++ (void)logWithRequest:(NSURLRequest *)request params:(id)params finalParams:(id)finalParams reponseData:(NSData *)responseData finalResponseData:(NSData *)finalResponseData error:(NSError *)error;
 
 /**
  缓存信息的日志
@@ -31,7 +31,7 @@
  @param method 请求的方式
  @param params 请求的参数
  */
-+ (void)logCacheData:(NSData *)data url:(NSString *)url method:(NSString *)method params:(NSDictionary *)params;
++ (void)logCacheData:(NSData *)data url:(NSString *)url method:(NSString *)method params:(id)params;
 
 
 @end

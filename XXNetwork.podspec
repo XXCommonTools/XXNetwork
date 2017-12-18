@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'XXNetwork'
-  s.version          = '0.2.2'
+  s.version          = '0.2.3'
   s.summary          = 'XXNetwork 是一个离散型的网络请求工具'
 
   s.description      = 'XXNetwork 是一个离散型的网络请求工具'

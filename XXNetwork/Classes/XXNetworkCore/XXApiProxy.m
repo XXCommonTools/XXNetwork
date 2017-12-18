@@ -74,28 +74,28 @@
     return dataTask.taskIdentifier;
 }
 #pragma mark - public
-- (NSInteger)callGETWithParams:(NSDictionary *)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
+- (NSInteger)callGETWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
 
     XXApiRequest *apiRequest = [[XXRequestGenerator sharedInstance] generateGETRequestWithServiceIdentifier:requestServiceIdentifier params:params requestUrl:requestUrl requestSerializerType:requestSerializerType];
     
     return [self callApiWithRequest:apiRequest serviceIdentifer:requestServiceIdentifier uploadProgress:nil success:successBlock fail:failBlock];
 }
 
-- (NSInteger)callPOSTWithParams:(NSDictionary *)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl bodyBlock:(void(^)(id <AFMultipartFormData>formData))bodyBlock uploadProgressBlock:(ProgressBlock)progressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
+- (NSInteger)callPOSTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl bodyBlock:(void(^)(id <AFMultipartFormData>formData))bodyBlock uploadProgressBlock:(ProgressBlock)progressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
 
     XXApiRequest *apiRequest = [[XXRequestGenerator sharedInstance] generatePOSTRequestWithServiceIdentifier:requestServiceIdentifier params:params requestUrl:requestUrl requestSerializerType:requestSerializerType bodyBlock:bodyBlock];
     
     return [self callApiWithRequest:apiRequest serviceIdentifer:requestServiceIdentifier uploadProgress:progressBlock success:successBlock fail:failBlock];
 }
 
-- (NSInteger)callPUTWithParams:(NSDictionary *)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
+- (NSInteger)callPUTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
 
     XXApiRequest *apiRequest = [[XXRequestGenerator sharedInstance] generatePUTRequestWithServiceIdentifier:requestServiceIdentifier params:params requestUrl:requestUrl requestSerializerType:requestSerializerType];
     
     return [self callApiWithRequest:apiRequest serviceIdentifer:requestServiceIdentifier uploadProgress:nil success:successBlock fail:failBlock];
 }
 
-- (NSInteger)callDELETEWithParams:(NSDictionary *)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
+- (NSInteger)callDELETEWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
 
      XXApiRequest *apiRequest = [[XXRequestGenerator sharedInstance] generateDELETERequestWithServiceIdentifier:requestServiceIdentifier params:params requestUrl:requestUrl requestSerializerType:requestSerializerType];
     

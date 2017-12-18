@@ -14,6 +14,9 @@
 
 ///在调用成功之后的params字典里面，用这个key可以取出requestID
 NSString *const kXXApiManagerRequestId = @"kXXApiManagerRequestId";
+///在调用成功之后的params字典里面，用这个key可以取出请求的参数
+NSString *const kXXApiManagerRequestParams = @"kXXApiManagerRequestParams";
+
 
 
 #define CallApi(requestId,requestMethod) {\
@@ -36,7 +39,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
 @property (assign,nonatomic,readwrite) XXApiManagerResultType resultType;
 @property (assign,nonatomic,readwrite) BOOL isLoading;
 @property (strong,nonatomic) XXApiResponse *response;
-@property (strong,nonatomic) NSDictionary *requestParams;
+@property (strong,nonatomic) id requestParams;
 ///失败时的code 0 为正常   通过这个可以看到对应的头文件，NSURLError.h NSURLErrorTimedOut
 @property (assign,nonatomic,readwrite) NSInteger errorCode;
 
@@ -92,7 +95,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     return isReachability;
 }
 
-- (void)fetchCacheDataWithId:(NSInteger)requestId params:(NSDictionary *)apiParams {
+- (void)fetchCacheDataWithId:(NSInteger)requestId params:(id)apiParams {
 
     [self fetchCacheDataWithParams:apiParams success:^(NSData *cacheData) {
         
@@ -106,15 +109,18 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
         }
     }];
 }
-- (void)handleCacheDataCallBackWithData:(NSData *)cacheData params:(NSDictionary *)apiParams {
+- (void)handleCacheDataCallBackWithData:(NSData *)cacheData params:(id)apiParams {
     
     XXApiResponse *response = [[XXApiResponse alloc] initWithResponseData:cacheData];
-    NSMutableDictionary *afterParams = [apiParams mutableCopy];
+    
+    id aParams = [apiParams mutableCopy];
+    NSMutableDictionary *afterParams = [[NSMutableDictionary alloc] init];
+    afterParams[kXXApiManagerRequestParams] = aParams;
     afterParams[kXXApiManagerRequestId] = @(-1);
     [self afterCallAPIWithParams:afterParams];
     [self requestSuccessWithReponse:response];
 }
-- (void)fetchCacheDataWithParams:(NSDictionary *)params success:(void(^)(NSData *cacheData))successBlock {
+- (void)fetchCacheDataWithParams:(id)params success:(void(^)(NSData *cacheData))successBlock {
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
        
@@ -133,7 +139,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
         });
     });
 }
-- (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime params:(NSDictionary *)params {
+- (void)saveCacheData:(NSData *)data cacheTime:(NSTimeInterval)cacheTime params:(id)params {
 
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
        
@@ -143,7 +149,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
         [[XXCacheManager sharedInstance] saveCacheData:data cacheTime:cacheTime serviceIdentifier:serviceIdenfitier url:url method:method params:params];
     });
 }
-- (void)deleteCacheData:(NSData *)data params:(NSDictionary *)params {
+- (void)deleteCacheData:(NSData *)data params:(id)params {
     
     NSString *serviceIdenfitier = self.child.requestServiceIdentifier;
     NSString *url = self.child.requestUrl;
@@ -151,18 +157,18 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     
     [[XXCacheManager sharedInstance] deleteDataWithServiceIdentifier:serviceIdenfitier url:url method:method params:params];
 }
-- (NSDictionary *)setUpRequestParams {
+- (id)setUpRequestParams {
     
-    NSDictionary *params = [self.paramSource paramsForApiManager:self];
+    id params = [self.paramSource paramsForApiManager:self];
     if ([self.child respondsToSelector:@selector(reformParams:)]) {
         
-        NSDictionary *dict = [self.child reformParams:params];
-        params = [[NSDictionary alloc] initWithDictionary:dict];
+        id dict = [self.child reformParams:params];
+        params = dict;
     }
     self.requestParams = params;
     return self.requestParams;
 }
-- (void)loadDataFromNetWorkWithId:(NSInteger)requestId params:(NSDictionary *)apiParams {
+- (void)loadDataFromNetWorkWithId:(NSInteger)requestId params:(id)apiParams {
     
     if ([self isReachable]) {
         
@@ -221,8 +227,10 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
             default:
                 break;
         }
-        NSMutableDictionary *afterParams = [apiParams mutableCopy];
+        id aParams = [apiParams mutableCopy];
+        NSMutableDictionary *afterParams = [[NSMutableDictionary alloc] init];
         afterParams[kXXApiManagerRequestId] = @(requestId);
+        afterParams[kXXApiManagerRequestParams] = aParams;
         [self afterCallAPIWithParams:afterParams];
         
     } else {
@@ -253,7 +261,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
         }
     }
 }
-- (NSInteger)loadDataWithParams:(NSDictionary *)apiParams {
+- (NSInteger)loadDataWithParams:(id)apiParams {
 
     NSInteger requestId = 0;
     if ([self shouldCallAPIWithParams:apiParams]) {
@@ -427,7 +435,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     }
 }
 
-- (BOOL)shouldCallAPIWithParams:(NSDictionary *)params {
+- (BOOL)shouldCallAPIWithParams:(id)params {
 
     if (self != self.interceptor && [self.interceptor respondsToSelector:@selector(manager:beforeCallingApiWithParams:)]) {
         
@@ -439,7 +447,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
     }
 
 }
-- (void)afterCallAPIWithParams:(NSDictionary *)params {
+- (void)afterCallAPIWithParams:(id)params {
 
     if (self != self.interceptor && [self.interceptor respondsToSelector:@selector(manager:afterCallingAPIWithParams:)]) {
         
@@ -463,7 +471,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
 }
 - (NSInteger)loadData {
 
-    NSDictionary *params = [self setUpRequestParams];
+    id params = [self setUpRequestParams];
     NSInteger requestIdentifier = [self loadDataWithParams:params];
     [self.requestArray addObject:@(requestIdentifier)];
     
@@ -477,7 +485,7 @@ __strong typeof(weakSelf) strongSelf = weakSelf;\
 ///清除该接口的缓存数据
 - (void)clearCacheData {
     
-    NSDictionary *params = [self setUpRequestParams];
+    id params = [self setUpRequestParams];
     [self fetchCacheDataWithParams:params success:^(NSData *cacheData) {
        
         [self deleteCacheData:cacheData params:params];

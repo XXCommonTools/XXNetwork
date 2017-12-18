@@ -43,6 +43,8 @@ typedef enum : NSUInteger {
 
 ///在调用成功之后的params字典里面，用这个key可以取出requestID
 extern NSString *const kXXApiManagerRequestId;
+///在调用成功之后的params字典里面，用这个key可以取出请求的参数
+extern NSString *const kXXApiManagerRequestParams;
 
 
 
@@ -72,7 +74,7 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 
 @required;
 
-- (NSDictionary *)paramsForApiManager:(XXApiBaseManager *)manager;
+- (id)paramsForApiManager:(XXApiBaseManager *)manager;
 
 @end
 
@@ -93,7 +95,7 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 ///拼接formData
 - (AFConstructingBlock)constructingBodyBlock;
 ///在调用API之前额外添加一些参数,但不应该在这个函数里面修改已有的参数
-- (NSDictionary *)reformParams:(NSDictionary *)params;
+- (id)reformParams:(id)params;
 ///返回YES则先从网络抓取数据，如果 cacheDataTime > 0 则更新本地数据
 - (BOOL)shouldLoadDataFromNetWork;
 ///返回YES则先从本地抓取数据，如果本地有数据则不发送网络请求，如果本地没有则发送网络请求
@@ -116,9 +118,9 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 - (void)manager:(XXApiBaseManager *)manager afterPerformFailWithResponse:(XXApiResponse *)response;
 
 ///调用api之前的拦截器 返回YES调用api 返回NO 不调用api
-- (BOOL)manager:(XXApiBaseManager *)manager beforeCallingApiWithParams:(NSDictionary *)params;
+- (BOOL)manager:(XXApiBaseManager *)manager beforeCallingApiWithParams:(id)params;
 ///调用api之后的拦截器
-- (void)manager:(XXApiBaseManager *)manager afterCallingAPIWithParams:(NSDictionary *)params;
+- (void)manager:(XXApiBaseManager *)manager afterCallingAPIWithParams:(id)params;
 
 
 @end
@@ -130,7 +132,7 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 ///验证回调的数据是否正确
 - (BOOL)manager:(XXApiBaseManager *)manager isCorrectWithCallBackData:(id)data;
 ///验证请求的参数是否正确
-- (BOOL)manager:(XXApiBaseManager *)manager isCorrectWithParamsData:(NSDictionary *)data;
+- (BOOL)manager:(XXApiBaseManager *)manager isCorrectWithParamsData:(id)data;
 
 @end
 
@@ -183,8 +185,8 @@ typedef void(^AFConstructingBlock)(id<AFMultipartFormData> formData);
 - (BOOL)beforePerformFailWithResponse:(XXApiResponse *)response;
 - (void)afterPerformFailWithResponse:(XXApiResponse *)response;
 
-- (BOOL)shouldCallAPIWithParams:(NSDictionary *)params;
-- (void)afterCallAPIWithParams:(NSDictionary *)params;
+- (BOOL)shouldCallAPIWithParams:(id)params;
+- (void)afterCallAPIWithParams:(id)params;
 
 ///这两个方法只是为了在宏里面可以调用，子类不需要调用这两个方法
 - (void)requestSuccessWithReponse:(XXApiResponse *)response;

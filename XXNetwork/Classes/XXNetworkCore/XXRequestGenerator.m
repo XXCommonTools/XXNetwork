@@ -37,18 +37,22 @@
     return sharedInstance;
 }
 #pragma mark - private
-- (NSDictionary *)setUpFullParamsWithService:(XXService *)service url:(NSString *)url requestParam:(NSDictionary *)params {
+- (id)setUpFullParamsWithService:(XXService *)service url:(NSString *)url requestParam:(id)params {
 
-    NSMutableDictionary *fullParams = [[NSMutableDictionary alloc] initWithDictionary:params];
-    if ([service.child respondsToSelector:@selector(setUpExtraParamsWithUrl:)]) {
+    id fullParams = params;
+    if ([params isKindOfClass:[NSDictionary class]]) {
         
-        NSDictionary *extraParams = [service.child setUpExtraParamsWithUrl:url];
-        if (extraParams) {
+        fullParams = [[NSMutableDictionary alloc] initWithDictionary:params];
+        if ([service.child respondsToSelector:@selector(setUpExtraParamsWithUrl:)]) {
             
-            [extraParams enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            id extraParams = [service.child setUpExtraParamsWithUrl:url];
+            if (extraParams) {
                 
-                [fullParams setObject:obj forKey:key];
-            }];
+                [extraParams enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                    
+                    [fullParams setObject:obj forKey:key];
+                }];
+            }
         }
     }
     if ([service.child respondsToSelector:@selector(handleParams:url:)]) {
@@ -56,15 +60,15 @@
         return [service.child handleParams:fullParams url:url];
         
     } else {
-    
+        
         return fullParams;
     }
 }
-- (XXApiRequest *)generateRequestWithServiceIdentifier:(NSString *)serviceIdenetifer params:(NSDictionary *)params requestUrl:(NSString *)requestUrl requestMethod:(NSString *)method requestSerializerType:(NSInteger)requestSerializerType bodyBlock:(void(^)(id <AFMultipartFormData> formData))bodyBlock {
+- (XXApiRequest *)generateRequestWithServiceIdentifier:(NSString *)serviceIdenetifer params:(id)params requestUrl:(NSString *)requestUrl requestMethod:(NSString *)method requestSerializerType:(NSInteger)requestSerializerType bodyBlock:(void(^)(id <AFMultipartFormData> formData))bodyBlock {
 
     XXService *service = [[XXServiceGenerator sharedInstance] serviceWithIdentifier:serviceIdenetifer];
     //拼接service提供的额外的参数
-    NSDictionary *fullParams = [self setUpFullParamsWithService:service url:requestUrl requestParam:params];
+    id fullParams = [self setUpFullParamsWithService:service url:requestUrl requestParam:params];
     //拼接全部的url地址
     NSString *fullUrl = [service fullUrlWithRequestUrl:requestUrl];
     
@@ -115,21 +119,21 @@
     return apiRequest;
 }
 #pragma mark - public
-- (XXApiRequest *)generateGETRequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(NSDictionary *)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type {
+- (XXApiRequest *)generateGETRequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(id)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type {
 
     return [self generateRequestWithServiceIdentifier:serviceIdentifier params:params requestUrl:requestUrl requestMethod:@"GET" requestSerializerType:type bodyBlock:nil];
 }
-- (XXApiRequest *)generatePOSTRequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(NSDictionary *)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type bodyBlock:(void(^)(id <AFMultipartFormData> formData))bodyBlock {
+- (XXApiRequest *)generatePOSTRequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(id)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type bodyBlock:(void(^)(id <AFMultipartFormData> formData))bodyBlock {
 
     return [self generateRequestWithServiceIdentifier:serviceIdentifier params:params requestUrl:requestUrl requestMethod:@"POST" requestSerializerType:type bodyBlock:bodyBlock];
 }
 
-- (XXApiRequest *)generatePUTRequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(NSDictionary *)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type {
+- (XXApiRequest *)generatePUTRequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(id)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type {
 
     return [self generateRequestWithServiceIdentifier:serviceIdentifier params:params requestUrl:requestUrl requestMethod:@"PUT" requestSerializerType:type bodyBlock:nil];
 }
 
-- (XXApiRequest *)generateDELETERequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(NSDictionary *)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type {
+- (XXApiRequest *)generateDELETERequestWithServiceIdentifier:(NSString *)serviceIdentifier params:(id)params requestUrl:(NSString *)requestUrl requestSerializerType:(NSInteger)type {
 
     return [self generateRequestWithServiceIdentifier:serviceIdentifier params:params requestUrl:requestUrl requestMethod:@"DELETE" requestSerializerType:type bodyBlock:nil];
 }
