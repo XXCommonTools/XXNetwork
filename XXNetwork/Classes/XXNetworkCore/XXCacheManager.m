@@ -145,6 +145,11 @@
     [self deleteFileWithPath:self.cacheDir];
     [self deleteFileWithPath:self.cacheObjectDir];
     [self deleteFileWithPath:self.cacheDataDir];
+    
+    self.cacheDataDir = nil;
+    self.cacheObjectDir = nil;
+    self.cacheDir = nil;
+    
 }
 #pragma mark - delegate
 
