@@ -12,7 +12,7 @@
 #import "XXApiResponse.h"
 
 typedef void(^XXCallBack)(XXApiResponse *response);
-typedef void(^ProgressBlock)(NSProgress *progress);
+typedef void(^XXProgressBlock)(NSProgress *progress);
 
 @interface XXApiProxy: NSObject
 
@@ -20,7 +20,7 @@ typedef void(^ProgressBlock)(NSProgress *progress);
 
 - (NSInteger)callGETWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock;
 
-- (NSInteger)callPOSTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl bodyBlock:(void(^)(id <AFMultipartFormData>formData))bodyBlock uploadProgressBlock:(ProgressBlock)progressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock;
+- (NSInteger)callPOSTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl bodyBlock:(void(^)(id <AFMultipartFormData>formData))bodyBlock uploadProgressBlock:(XXProgressBlock)progressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock;
 
 - (NSInteger)callPUTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl success:(XXCallBack)successBlock fail:(XXCallBack)failBlock;
 

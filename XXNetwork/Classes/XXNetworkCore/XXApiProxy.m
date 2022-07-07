@@ -40,7 +40,7 @@
 
 
 #pragma mark - private
-- (NSInteger)callApiWithRequest:(XXApiRequest *)request serviceIdentifer:(NSString *)requestServiceIdentifier uploadProgress:(ProgressBlock)uploadProgressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
+- (NSInteger)callApiWithRequest:(XXApiRequest *)request serviceIdentifer:(NSString *)requestServiceIdentifier uploadProgress:(XXProgressBlock)uploadProgressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
 
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self.manager dataTaskWithRequest:request.urlRequest uploadProgress:uploadProgressBlock downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
@@ -81,7 +81,7 @@
     return [self callApiWithRequest:apiRequest serviceIdentifer:requestServiceIdentifier uploadProgress:nil success:successBlock fail:failBlock];
 }
 
-- (NSInteger)callPOSTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl bodyBlock:(void(^)(id <AFMultipartFormData>formData))bodyBlock uploadProgressBlock:(ProgressBlock)progressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
+- (NSInteger)callPOSTWithParams:(id)params requestSerializerType:(NSInteger)requestSerializerType requestServiceIdentifier:(NSString *)requestServiceIdentifier requestUrl:(NSString *)requestUrl bodyBlock:(void(^)(id <AFMultipartFormData>formData))bodyBlock uploadProgressBlock:(XXProgressBlock)progressBlock success:(XXCallBack)successBlock fail:(XXCallBack)failBlock {
 
     XXApiRequest *apiRequest = [[XXRequestGenerator sharedInstance] generatePOSTRequestWithServiceIdentifier:requestServiceIdentifier params:params requestUrl:requestUrl requestSerializerType:requestSerializerType bodyBlock:bodyBlock];
     
